@@ -19,7 +19,6 @@
 */
 
 // The container for all the sections in index.html
-const sections = document.querySelectorAll('section');
 
 /**
  * End Global Variables
@@ -36,6 +35,7 @@ const sections = document.querySelectorAll('section');
 
 // build the nav
 function buildNavBar() {
+    const sections = document.querySelectorAll('section');
     const docFragment = document.createDocumentFragment();
     const listOfItems = document.getElementById('navbar__list');
     sections.forEach((section) => {
@@ -51,7 +51,21 @@ function buildNavBar() {
 }
 
 // Add class 'active' to section when near top of viewport
-
+// STOPPED HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+function getCurrentElement() {
+    const currentSelectedSection = document.querySelector('.your-active-class');
+    const boundingClientRect = currentSelectedSection.getBoundingClientRect();
+    if (window.scrollY > 1000) {
+        if (boundingClientRect.top < 0 && boundingClientRect.bottom < 50 && currentSelectedSection.nextElementSibling) {
+            currentSelectedSection.classList.remove('your-active-class');
+            currentSelectedSection.nextElementSibling.classList.add('your-active-class');
+        }
+        if (boundingClientRect.top > 50 && boundingClientRect.bottom > 0 && currentSelectedSection.previousElementSibling) {
+            currentSelectedSection.classList.remove('your-active-class');
+            currentSelectedSection.previousElementSibling.classList.add('your-active-class');
+        }
+    }
+}
 
 // Scroll to anchor ID using scrollTO event
 
@@ -63,6 +77,7 @@ function buildNavBar() {
 */
 
 document.addEventListener('DOMContentLoaded', buildNavBar);
+document.addEventListener('scroll', getCurrentElement);
 // Build menu
 
 // Scroll to section on link click
