@@ -60,6 +60,7 @@ function buildNavBar() {
  */
 
 function activateSection() {
+    const firstSection = document.getElementById('section1');
     const currentSelectedSection = document.querySelector('.your-active-class');
     const associatedLink = document.querySelector(`a[href='#${currentSelectedSection.id}']`);
     /**
@@ -68,11 +69,11 @@ function activateSection() {
 
     const boundingClientRect = currentSelectedSection.getBoundingClientRect();
 
-    if (window.scrollY > 900) {
+    if (firstSection.getBoundingClientRect().top < 0) {
         /**
          * Start changing the current active section,
          * only when the user has already reached the first section
-         * (after scrolling past approx. 900 pixels from top)
+         * (scrolled past the first section's Y axis, i. e. top property)
          */
         if (boundingClientRect.top < 0 && boundingClientRect.bottom < 70
             && currentSelectedSection.nextElementSibling) {
@@ -89,12 +90,15 @@ function activateSection() {
             associatedLink.parentElement.previousElementSibling.firstChild.classList.add('menu__link__active');
         }
     } else {
+        /**
+         * Make sure that the first element is still active
+         */
         document.getElementById('section1').classList.toggle('your-active-class', true);
     }
 }
 
 /**
- * @description Scroll to the section attached to the clicked anchor element
+ * @description Scroll to the section associated with the clicked anchor element
  * @param {Event} event An event object that's based on the main Event interface,
  * and has properties specific to the dispatched event
  */
