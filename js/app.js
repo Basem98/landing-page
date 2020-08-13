@@ -18,7 +18,10 @@
  *
 */
 
-// The container for all the sections in index.html
+/**
+ * The list of the anchor elements that navigate to different sections
+ */
+const listOfItems = document.getElementById('navbar__list');
 
 /**
  * End Global Variables
@@ -33,11 +36,13 @@
  *
 */
 
-// build the nav
+/**
+ * @description Build the navigation bar dynamically based on the number of sections in the document
+ */
+
 function buildNavBar() {
     const sections = document.querySelectorAll('section');
     const docFragment = document.createDocumentFragment();
-    const listOfItems = document.getElementById('navbar__list');
     sections.forEach((section) => {
         const listItem = document.createElement('li');
         const anchor = document.createElement('a');
@@ -50,25 +55,54 @@ function buildNavBar() {
     listOfItems.appendChild(docFragment);
 }
 
-// Add class 'active' to section when near top of viewport
-// STOPPED HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-function getCurrentElement() {
+/**
+ * @description Add class 'active' to the topmost section in the viewport
+ */
+
+function activateSection() {
     const currentSelectedSection = document.querySelector('.your-active-class');
+    /**
+     *  The section's size and position relative to the user's viewport
+     */
+
     const boundingClientRect = currentSelectedSection.getBoundingClientRect();
-    if (window.scrollY > 1000) {
-        if (boundingClientRect.top < 0 && boundingClientRect.bottom < 50 && currentSelectedSection.nextElementSibling) {
+    /**
+     * Start changing the current active section,
+     * only when the user has already reached the first section
+     * (after scrolling past approx. 900 pixels from top)
+     */
+
+    if (window.scrollY > 900) {
+        if (boundingClientRect.top < 0 && boundingClientRect.bottom < 70 && currentSelectedSection.nextElementSibling) {
             currentSelectedSection.classList.remove('your-active-class');
             currentSelectedSection.nextElementSibling.classList.add('your-active-class');
         }
-        if (boundingClientRect.top > 50 && boundingClientRect.bottom > 0 && currentSelectedSection.previousElementSibling) {
+        if (boundingClientRect.top > 70 && boundingClientRect.bottom > 0 && currentSelectedSection.previousElementSibling) {
             currentSelectedSection.classList.remove('your-active-class');
             currentSelectedSection.previousElementSibling.classList.add('your-active-class');
         }
+    } else {
+        currentSelectedSection.classList.remove('your-active-class');
+        document.getElementById('section1').classList.toggle('your-active-class');
     }
 }
 
-// Scroll to anchor ID using scrollTO event
-
+/**
+ * @description Scroll to the section attached to the clicked anchor element
+ * @param {Event} event An event object that's based on the main Event interface,
+ * and has properties specific to the dispatched event
+ */
+function scrollToSection(event) {
+    event.preventDefault();
+    const selectedSectionId = event.target.getAttribute('href').slice(1);
+    const selectedSection = document.getElementById(selectedSectionId);
+    const sectionBoundigClientRect = selectedSection.getBoundingClientRect();
+    const scrollingOptions = {
+        top: window.scrollY + sectionBoundigClientRect.top,
+        behavior: 'smooth'
+    };
+    window.scrollTo(scrollingOptions);
+}
 
 /**
  * End Main Functions
@@ -76,11 +110,25 @@ function getCurrentElement() {
  *
 */
 
-document.addEventListener('DOMContentLoaded', buildNavBar);
-document.addEventListener('scroll', getCurrentElement);
-// Build menu
+/**
+ * When the DOM is ready to be interacted with, start building the navigation bar
+ */
 
-// Scroll to section on link click
+document.addEventListener('DOMContentLoaded', buildNavBar);
+document.addEventListener('DOMContentLoaded', activateSection);
+
+/**
+ * On scrolling, change the active section based on what is the topmost section in the viewport
+ */
+
+document.addEventListener('scroll', activateSection);
+
+/**
+ * On clicking any anchor element in the nav__list, scroll to the selected section,
+ * instead of the default anchor behavior
+ */
+
+listOfItems.addEventListener('click', scrollToSection);
 
 // Set sections as active
 
