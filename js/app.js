@@ -18,10 +18,19 @@
  *
 */
 
+
 /**
  * The list of the anchor elements that navigate to different sections
  */
+
 const listOfItems = document.getElementById('navbar__list');
+
+/**
+ * Keep track of the currently-running timer to destroy it before setting a new one
+ */
+
+let timeoutID;
+
 
 /**
  * End Global Variables
@@ -31,10 +40,28 @@ const listOfItems = document.getElementById('navbar__list');
 
 
 /**
+ * @description Show the navigation bar,
+ * then set a timer that hides it after 3 seconds, if not destroyed
+ * @returns {number} timeoutID The ID that'll be used to destroy the timer
+ */
+
+function toggleNavBar() {
+    const pageHeader = document.querySelector('.page__header');
+    pageHeader.style.display = 'block';
+
+    const timeoutID = setTimeout(() => {
+        pageHeader.style.display = 'none';
+    }, 3000);
+    return timeoutID;
+}
+
+
+/**
  * End Helper Functions
  * Begin Main Functions
  *
 */
+
 
 /**
  * @description Build the navigation bar dynamically based on the number of sections in the document
@@ -60,14 +87,16 @@ function buildNavBar() {
  */
 
 function activateSection() {
+    clearTimeout(timeoutID);
+    timeoutID = toggleNavBar();
     const firstSection = document.getElementById('section1');
-    const currentSelectedSection = document.querySelector('.your-active-class');
-    const associatedLink = document.querySelector(`a[href='#${currentSelectedSection.id}']`);
+    const activeSection = document.querySelector('.your-active-class');
+    const associatedLink = document.querySelector(`a[href='#${activeSection.id}']`);
+
     /**
      *  The section's size and position relative to the user's viewport
      */
-
-    const boundingClientRect = currentSelectedSection.getBoundingClientRect();
+    const boundingClientRect = activeSection.getBoundingClientRect();
 
     if (firstSection.getBoundingClientRect().top < 0) {
         /**
@@ -76,16 +105,16 @@ function activateSection() {
          * (scrolled past the first section's Y axis, i. e. top property)
          */
         if (boundingClientRect.top < 0 && boundingClientRect.bottom < 70
-            && currentSelectedSection.nextElementSibling) {
-            currentSelectedSection.classList.remove('your-active-class');
-            currentSelectedSection.nextElementSibling.classList.add('your-active-class');
+            && activeSection.nextElementSibling) {
+            activeSection.classList.remove('your-active-class');
+            activeSection.nextElementSibling.classList.add('your-active-class');
             associatedLink.classList.remove('menu__link__active');
             associatedLink.parentElement.nextElementSibling.firstChild.classList.add('menu__link__active');
         }
         if (boundingClientRect.top > 70 && boundingClientRect.bottom > 0
-            && currentSelectedSection.previousElementSibling) {
-            currentSelectedSection.classList.remove('your-active-class');
-            currentSelectedSection.previousElementSibling.classList.add('your-active-class');
+            && activeSection.previousElementSibling) {
+            activeSection.classList.remove('your-active-class');
+            activeSection.previousElementSibling.classList.add('your-active-class');
             associatedLink.classList.remove('menu__link__active');
             associatedLink.parentElement.previousElementSibling.firstChild.classList.add('menu__link__active');
         }
@@ -120,11 +149,13 @@ function scrollToSection(event) {
     }
 }
 
+
 /**
  * End Main Functions
  * Begin Events
  *
 */
+
 
 /**
  * When the DOM is ready to be interacted with, start building the navigation bar
@@ -133,8 +164,16 @@ function scrollToSection(event) {
 document.addEventListener('DOMContentLoaded', buildNavBar);
 
 /**
- * When the DOM first loads, activate the section in the viewport after loading,
- * in case this section isn't the first one
+ * Show the navigation bar on load,
+ * then hide it after 3 seconds, if no scrolling event is fired
+ */
+
+document.addEventListener('DOMContentLoaded', () => {
+    timeoutID = toggleNavBar();
+});
+
+/**
+ * When the DOM first loads, activate the section in the viewport after loading
  */
 
 document.addEventListener('DOMContentLoaded', activateSection);
