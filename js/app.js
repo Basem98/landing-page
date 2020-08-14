@@ -31,6 +31,7 @@ const listOfItems = document.getElementById('navbar__list');
 
 let timeoutID;
 
+const scrollToTop = document.querySelector('.scroll__btn');
 
 /**
  * End Global Variables
@@ -53,6 +54,32 @@ function toggleNavBar() {
         pageHeader.style.display = 'none';
     }, 3000);
     return timeoutID;
+}
+
+/**
+ * @description Activate the next section and the link associated with it
+ * @param {Element} currentlyActiveSection The currently active section
+ * @param {Element} associatedLink The anchor link associated with this section
+ */
+
+function activateNextSection(currentlyActiveSection, associatedLink) {
+    currentlyActiveSection.classList.remove('your-active-class');
+    currentlyActiveSection.nextElementSibling.classList.add('your-active-class');
+    associatedLink.classList.remove('menu__link__active');
+    associatedLink.parentElement.nextElementSibling.firstChild.classList.add('menu__link__active');
+}
+
+/**
+ * @description Activate the previous section and the link associated with it
+ * @param {Element} currentlyActiveSection The currently active section
+ * @param {Element} associatedLink The anchor link associated with this section
+ */
+
+function activatePreviousSection(currentlyActiveSection, associatedLink) {
+    currentlyActiveSection.classList.remove('your-active-class');
+    currentlyActiveSection.previousElementSibling.classList.add('your-active-class');
+    associatedLink.classList.remove('menu__link__active');
+    associatedLink.parentElement.previousElementSibling.firstChild.classList.add('menu__link__active');
 }
 
 
@@ -104,30 +131,32 @@ function activateSection() {
 
     if (firstSection.getBoundingClientRect().top < 0) {
         /**
+         * Show the scroll to top button when the user gets past the fold
+         */
+        if (scrollToTop.style.visibility != 'visible') {
+            scrollToTop.style.visibility = 'visible';
+        }
+        /**
          * Start changing the current active section,
-         * only when the user has already reached the first section
+         * only when the user has already got past the first section
          * (scrolled past the first section's Y axis, i. e. top property)
          */
         if (boundingClientRect.top < 0 && boundingClientRect.bottom < 70
             && activeSection.nextElementSibling) {
-            activeSection.classList.remove('your-active-class');
-            activeSection.nextElementSibling.classList.add('your-active-class');
-            associatedLink.classList.remove('menu__link__active');
-            associatedLink.parentElement.nextElementSibling.firstChild.classList.add('menu__link__active');
+            activateNextSection(activeSection, associatedLink);
         }
         if (boundingClientRect.top > 70 && boundingClientRect.bottom > 0
             && activeSection.previousElementSibling) {
-            activeSection.classList.remove('your-active-class');
-            activeSection.previousElementSibling.classList.add('your-active-class');
-            associatedLink.classList.remove('menu__link__active');
-            associatedLink.parentElement.previousElementSibling.firstChild.classList.add('menu__link__active');
+            activatePreviousSection(activeSection, associatedLink);
         }
     } else {
         /**
          * Make sure that the first element is still active while the user is at the top
          */
         document.getElementById('section1').classList.toggle('your-active-class', true);
+        associatedLink?.classList.remove('menu__link__active');
         document.querySelector('[href=\'#section1\'').classList.toggle('menu__link__active', true);
+        scrollToTop.style.visibility = 'hidden';
     }
 }
 
@@ -137,6 +166,7 @@ function activateSection() {
  * @param {Event} event An event object that's based on the main Event interface,
  * and has properties specific to the dispatched event
  */
+
 function scrollToSection(event) {
     event.preventDefault();
     const selectedSectionId = event.target.getAttribute('href')?.slice(1);
@@ -195,3 +225,13 @@ document.addEventListener('scroll', activateSection);
 
 listOfItems.addEventListener('click', scrollToSection);
 
+/**
+ * When the scroll to top button is clicked, scroll to the top of the page
+ */
+
+scrollToTop.addEventListener('click', () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+});
