@@ -91,24 +91,26 @@ function activateSection() {
         }
     } else {
         /**
-         * Make sure that the first element is still active
+         * Make sure that the first element is still active, if the user is at the top
          */
         document.getElementById('section1').classList.toggle('your-active-class', true);
+        document.querySelector('[href=\'#section1\'').classList.toggle('menu__link__active', true);
     }
 }
 
 /**
- * @description Scroll to the section associated with the clicked anchor element
+ * @description Scroll to the section associated with the clicked anchor element,
+ * then activate that anchor
  * @param {Event} event An event object that's based on the main Event interface,
  * and has properties specific to the dispatched event
  */
 function scrollToSection(event) {
     event.preventDefault();
-    document.querySelector('.menu__link__active')?.classList.remove('menu__link__active');
-    event.target.classList.add('menu__link__active');
     const selectedSectionId = event.target.getAttribute('href')?.slice(1);
     const selectedSection = document.getElementById(selectedSectionId);
     if (selectedSection) {
+        document.querySelector('.menu__link__active')?.classList.remove('menu__link__active');
+        event.target.classList.add('menu__link__active');
         const sectionBoundigClientRect = selectedSection.getBoundingClientRect();
         const scrollingOptions = {
             top: window.scrollY + sectionBoundigClientRect.top,
