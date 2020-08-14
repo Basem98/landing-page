@@ -87,8 +87,6 @@ function buildNavBar() {
  */
 
 function activateSection() {
-    clearTimeout(timeoutID);
-    timeoutID = toggleNavBar();
     const firstSection = document.getElementById('section1');
     const activeSection = document.querySelector('.your-active-class');
     const associatedLink = document.querySelector(`a[href='#${activeSection.id}']`);
@@ -97,6 +95,12 @@ function activateSection() {
      *  The section's size and position relative to the user's viewport
      */
     const boundingClientRect = activeSection.getBoundingClientRect();
+
+    /**
+     * Clear any pre-existing timer, then show the nav bar and start a new timer
+     */
+    clearTimeout(timeoutID);
+    timeoutID = toggleNavBar();
 
     if (firstSection.getBoundingClientRect().top < 0) {
         /**
@@ -120,7 +124,7 @@ function activateSection() {
         }
     } else {
         /**
-         * Make sure that the first element is still active, if the user is at the top
+         * Make sure that the first element is still active while the user is at the top
          */
         document.getElementById('section1').classList.toggle('your-active-class', true);
         document.querySelector('[href=\'#section1\'').classList.toggle('menu__link__active', true);
