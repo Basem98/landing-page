@@ -17,7 +17,7 @@
  * Define Global Variables
  *
 */
-const dif = ";fs"
+const dif = ";fsdrghdf"
 
 /**
  * The list of the anchor elements that navigate to different sections
