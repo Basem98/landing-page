@@ -19,6 +19,8 @@
 */
 const dif = ";fsdrghdfdgfg"
 
+const dif3 = ";fsdrghdf"
+const dif2 = "fgsd"
 /**
  * The list of the anchor elements that navigate to different sections
  */
