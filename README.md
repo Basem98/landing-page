@@ -11,3 +11,4 @@ This is a landing page that represents any data that comes from a news API or an
 * Add an active state to the navigation items when their associated sections are active as well
 * Hide the navigation bar after 5 3 seconds of inactivity
 * Add a scroll to the top button that appears when you get past the fold of the page
+* Nice project
